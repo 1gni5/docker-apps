@@ -1,0 +1,40 @@
+services:
+
+  minecraft:
+    image: itzg/minecraft-server
+    container_name: minecraft-server-th
+    ports:
+      - 26656:25565
+    environment:
+      EULA: "TRUE"
+      TZ: "Europe/Paris"
+      STOP_SERVER_ANNOUNCE_DELAY: 10
+      ENABLE_AUTOPAUSE: "TRUE"
+      ENABLE_ROLLING_LOGS: "TRUE"
+      RCON_CMDS_STARTUP:  |-
+        /scoreboard objectives add deaths deathCount
+        /scoreboard objectives setdisplay list deaths
+        /scoreboard objectives add health health {"text":"❤", "color":"red"}
+        /scoreboard objectives setdisplay belowName health
+        /team add sleeping_knights
+        /team modify sleeping_knights friendlyFire false
+        /gamerule playersSleepingPercentage 50
+
+      RCON_CMDS_ON_CONNECT: |-
+        /say Welcome to you player !
+        /team join sleeping_knights @a[team=]
+    tty: true
+    stdin_open: true
+    restart: unless-stopped
+    volumes:
+      - ./data:/data
+
+  backups:
+    image: itzg/mc-backup
+    container_name: minecraft-backups-th
+    environment:
+      BACKUP_INTERVAL: "12h"
+    volumes:
+    - ./data:/data:ro
+    - /mnt/share/backups-th:/backups
+    network_mode: "service:minecraft"
