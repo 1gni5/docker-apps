@@ -1,10 +1,11 @@
 #! /bin/sh
 
-# Retreive all applications
-applications=$(ls -d */)
-for application in $applications
+# Retreive all installed applications
+for application in $(ls -d */)
 do
 	echo "Starting auto-update for $application."
+
+	# Check if should skip this one or not
 	should_ignore=$(find $application -type f -name '.ignore-update' | wc -l)
 	
 	if [ "$should_ignore" -gt 0 ]
