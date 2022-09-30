@@ -36,5 +36,5 @@ services:
       BACKUP_INTERVAL: "12h"
     volumes:
     - ./data:/data:ro
-    - /mnt/share/backups-us:/backups
+    - /mnt/share/minecraft-backups/us:/backups
     network_mode: "service:minecraft"
